@@ -1,0 +1,11 @@
+# Compiled python modules.
+*.pyc
+
+# generic files
+*~
+*.kate-swp
+*.swp
+*.vim
+
+jobs*/
+figures/
