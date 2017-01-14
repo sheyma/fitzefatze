@@ -93,34 +93,30 @@ def get_small_worldness(G, thr, out_prfx):
 
 	f.close() 
 
-file_in = '/home/sheyma/devel/tmp/data/jobs_adj/acp_w_thr_0.87.dat'
-adj_mtx  =  np.loadtxt(file_in, unpack=True).T
-graph    = nx.from_numpy_matrix(adj_mtx)
-out_prfx = 'acp_w_'
 
-get_small_worldness(graph, 0.87, out_prfx)
-
-#data_dir = '/home/sheyma/devel/tmp/data/jobs_adj'
-#tmp_name = 'acp_w_thr_'
-#A = 'orig'
+data_dir = '/home/sheyma/devel/tmp/data/jobs_adj'
+tmp_name = 'acp_w_thr_'
+A = 'orig'
 #A = 'erdos'
 
-#for i in range(0, 101):
-#        thr = float(i) / 100
-#        thr = format(thr, '.2f')
-#
-#        if A == 'orig' :
-#            file_in  = tmp_name + thr + '.dat'
-#            out_prfx = '/home/sheyma/devel/tmp/data/jobs_network/acp_w_'
-#        elif A == 'erdos':
-#            file_in  = tmp_name + thr + '_erdos.dat'
-#            out_prfx = '/home/sheyma/devel/tmp/data/jobs_network/acp_w_erdos_'
-#
-#        file_in  = os.path.join(data_dir, file_in)
-#        adj_mtx  =  np.loadtxt(file_in, unpack=True).T
-#        graph    = nx.from_numpy_matrix(adj_mtx)        
-#        get_single_network_measures(graph, float(thr), out_prfx)
-#        print file_in, (thr)
+for i in range(0, 101):
+        thr = float(i) / 100
+        thr = format(thr, '.2f')
+
+        if A == 'orig' :
+            file_in  = tmp_name + thr + '.dat'
+            out_prfx = '/home/sheyma/devel/tmp/data/jobs_network/acp_w_'
+        elif A == 'erdos':
+            file_in  = tmp_name + thr + '_erdos.dat'
+            out_prfx = '/home/sheyma/devel/tmp/data/jobs_network/acp_w_erdos_'
+
+        file_in  = os.path.join(data_dir, file_in)
+        adj_mtx  =  np.loadtxt(file_in, unpack=True).T
+        graph    = nx.from_numpy_matrix(adj_mtx)        
+        get_single_network_measures(graph, float(thr), out_prfx)
+        get_small_worldness(graph, float(thr), out_prfx)
+
+        print file_in, (thr)
 
 
 
