@@ -6,7 +6,6 @@ import random
 import numpy as np
 import math
 import os
-import pylab as pl
 
 # adjacency matrix
 gfilename = sys.argv[1]
@@ -19,17 +18,26 @@ eqns = {r'x{i}': '(y{i} + gamma * x{i} - pow(x{i},3.0)/3.0) * TAU',
         r'y{i}': '- (x{i} - alpha + b * y{i}) / TAU'}
 
 params = { # Fitzhugh-Nagumo parameters...
-        'gamma': 1.0, 
-        'alpha': 0.85,  
-        'b': 0.2,
-        'TAU': 1.25, 
-		# global coupling constant
-		'sigma': float(sys.argv[3]),  
-		# noise strength
-		'D' : float(0.05),  
-		# velocity [0.1 m/s]
-	    'v' : float(sys.argv[4]), 
+    'gamma': 1.0,
+    'alpha': 0.85,
+    'b': 0.2,
+    'TAU': 1.25,
+    # global coupling constant
+    'sigma': float(sys.argv[3]),
+    # noise strength
+    'D' : float(0.05),
+    # velocity [0.1 m/s]
+    'v' : float(sys.argv[4]),
 }
+# total simulation time [10 ms]
+tmax = 45000
+
+outfilename = gfilename[:-4] +\
+              '_sigma=' + format(params['sigma'], '.3f') +\
+              '_D=' + format(params['D'], '.2f') +\
+              '_v=' + format(params['v'], '.1f') +\
+              '_tmax=' + str(tmax) +\
+              '.dat'
 
 # Gaussian White Noise
 noise = {'x': 'D * gwn()', 'y': 'D * gwn()'}  
@@ -89,8 +97,6 @@ for i in range(len(G)):
 neuronetz.ddeN.hist_from_arrays(dic)
 
 """ Start simulation with t = [0,tmax] """
-# total simulation time [10 ms] 
-tmax = 45000  
 neuronetz.run(tmax)
 
 # alternative way to generate history function/initial conditions
@@ -113,9 +119,7 @@ for i in range(0,len(G[0])):
 	# skip y for now to minimize output
 	# y[i] =  solution['y'+str(i)][0:]
 
-f = open(gfilename[:-4]+'_sigma='+str(params['sigma'])+
-		 '_D='+str(params['D'])+'_v='+str(params['v'])+
-		 '_tmax='+str(tmax)+'.dat', 'w')
+f = open(outfilename, 'w')
 
 for i, t0 in enumerate(t):
 	f.write('%s' % (t0))
