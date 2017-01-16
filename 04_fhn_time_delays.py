@@ -30,7 +30,7 @@ params = { # Fitzhugh-Nagumo parameters...
     'v' : float(sys.argv[4]),
 }
 # total simulation time [10 ms]
-tmax = 45000
+tmax = int(sys.argv[5])
 
 outfilename = gfilename[:-4] +\
               '_sigma=' + format(params['sigma'], '.3f') +\
