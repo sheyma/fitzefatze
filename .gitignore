@@ -6,6 +6,7 @@
 *.kate-swp
 *.swp
 *.vim
+.~lock*
 
 jobs*/
 figures/

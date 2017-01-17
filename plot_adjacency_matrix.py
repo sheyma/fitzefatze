@@ -49,7 +49,7 @@ def plot_adj(adjacency_matrix):
 #file_in    = '/home/sheyma/devel/tmp/data/acp_w_thr_0.54_doubedge.dat'
 #file_in    = '/home/sheyma/devel/tmp/data/acp_w_thr_0.54_presdist.dat'
 #file_in    = '/home/sheyma/devel/tmp/data/acp_w_thr_0.54_partial.dat'
-file_in    = '/home/sheyma/devel/tmp/data/acp_w_thr_0.54_config.dat'
+file_in    = '/home/sheyma/devel/fitzefatze/data/jobs_adj/acp_w_thr_0.54_config.dat'
 
 
 adj_matrix = load_matrix(file_in)

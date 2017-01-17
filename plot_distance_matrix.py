@@ -12,6 +12,8 @@ def load_matrix(file):
 	
 # plotting color coded distance matrix
 def plot_corr(distance_matrix, distance_unit):	
+	# distance_matrix : 2D array
+	# distance_unit : string
 	
 	N_col  = np.shape(distance_matrix)[1]
 	extend = (0.5 , N_col+0.5 , N_col+0.5, 0.5 )
@@ -20,8 +22,13 @@ def plot_corr(distance_matrix, distance_unit):
 	ax.tick_params('both', length=15, width=8, which='major')
 	plt.subplots_adjust(left=0.10, right=0.95, top=0.95, bottom=0.12)
 	
+	# for the original fiber length...
 	cmin = distance_matrix.min()
 	cmax = distance_matrix.max()
+	
+	cmin = 0
+	cmax =332.71967
+	print cmin, cmax
 	
 	plt.imshow(distance_matrix, vmin=cmin, vmax=cmax, extent=extend)
 	
@@ -36,8 +43,36 @@ def plot_corr(distance_matrix, distance_unit):
 	plt.ylabel('Nodes', fontsize = 50)
 	return fig 	
 
-file_in  = '/home/sheyma/devel/tmp/data/fib_length.dat'
+def distance_masking(distance_matrix, mask_file):
+    mask     = load_matrix(mask_file)
+    d_masked = np.copy(distance_matrix)
+    d_masked[np.where(mask==0)] = 0
+    return d_masked
+
+
+file_in  = '/home/sheyma/devel/fitzefatze/data/fib_length.dat'
 d_matrix = load_matrix(file_in)
-figure   = plot_corr(d_matrix, 'mm')
-figure.savefig('/home/sheyma/devel/tmp/figures/distance_matrix.png')
-plt.show()
+
+file_orig = '/home/sheyma/devel/fitzefatze/data/jobs_adj/acp_w_thr_0.54.dat'
+file_rand = '/home/sheyma/devel/fitzefatze/data/jobs_erdos00/acp_w_thr_0.54_erdos.dat'
+
+d_orig = distance_masking(d_matrix, file_orig)
+d_rand = distance_masking(d_matrix, file_rand)
+
+
+#flat_orig = np.ndarray.flatten(d_orig)
+#plt.figure(1)
+#plt.hist(flat_orig)
+
+#flat_rand = np.ndarray.flatten(d_rand)
+#plt.figure(2)
+#plt.hist(flat_rand)
+
+#plt.show()
+
+#figure   = plot_corr(d_orig, 'mm')
+figure   = plot_corr(d_rand, 'mm')
+#figure.savefig('/home/sheyma/devel/fitzefatze/figures/distance_matrix.png')
+figure.savefig('/home/sheyma/devel/fitzefatze/figures/distance_matrix_random.png')
+#figure.savefig('/home/sheyma/devel/fitzefatze/figures/distance_matrix_orig.png')
+#plt.show()

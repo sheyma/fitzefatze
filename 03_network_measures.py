@@ -11,8 +11,8 @@ import sys, os, glob
 # get average degree of full network for different threshold values
 # get number of connected components of full network for dif.thre.val.
 # get shortest pathway of network
-def get_single_network_measures(G, thr, out_prfx):
-	f = open(out_prfx + 'single_network_measures.dat', 'a')
+def get_single_network_measures(G, thr, outdir):
+	f = open(outdir + '/single_network_measures.dat', 'a')
 	N = nx.number_of_nodes(G)
 	L = nx.number_of_edges(G)
 	D = nx.density(G)
@@ -43,8 +43,8 @@ def get_single_network_measures(G, thr, out_prfx):
 	f.close()
 
 
-def get_small_worldness(G, thr, out_prfx):
-	f = open(out_prfx + 'small_worldness.dat', 'a')
+def get_small_worldness(G, thr, outdir):
+	f = open(outdir + '/small_worldness.dat', 'a')
 
 	ER_graph   = nx.erdos_renyi_graph(nx.number_of_nodes(G), nx.density(G))
 	cluster    = nx.average_clustering(G)   
@@ -94,29 +94,14 @@ def get_small_worldness(G, thr, out_prfx):
 	f.close() 
 
 
-data_dir = '/home/sheyma/devel/tmp/data/jobs_adj'
-tmp_name = 'acp_w_thr_'
-A = 'orig'
-#A = 'erdos'
+if __name__ == '__main__':
 
-for i in range(0, 101):
-        thr = float(i) / 100
-        thr = format(thr, '.2f')
-
-        if A == 'orig' :
-            file_in  = tmp_name + thr + '.dat'
-            out_prfx = '/home/sheyma/devel/tmp/data/jobs_network/acp_w_'
-        elif A == 'erdos':
-            file_in  = tmp_name + thr + '_erdos.dat'
-            out_prfx = '/home/sheyma/devel/tmp/data/jobs_network/acp_w_erdos_'
-
-        file_in  = os.path.join(data_dir, file_in)
-        adj_mtx  =  np.loadtxt(file_in, unpack=True).T
-        graph    = nx.from_numpy_matrix(adj_mtx)        
-        get_single_network_measures(graph, float(thr), out_prfx)
-        get_small_worldness(graph, float(thr), out_prfx)
-
-        print file_in, (thr)
-
-
-
+    for i in range(1, len(sys.argv)):
+        file_in  = sys.argv[i]
+        outdir = os.path.dirname(file_in)
+        thr      = os.path.basename(file_in)[10:14]
+        adj_mtx  = np.loadtxt(file_in, unpack=True).T
+        graph    = nx.from_numpy_matrix(adj_mtx) 
+        get_single_network_measures(graph, float(thr), outdir)
+        #get_small_worldness(graph, float(thr), outdir)
+        print i, file_in, thr, outdir
