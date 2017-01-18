@@ -856,14 +856,14 @@ def neteqns(G, H, T, eqns_solitary, params, coupling, var=False):
             for k in range(N):
                 if G[i][k] != 0:
                     for w,W in enumerate(vars):
-                        if H[v][w] != 0:
+                        if H[v][w] != "0":
                             if var == False:
                                 fmt = { 'G' : float(G[i][k]),
-                                        'H' : float(H[v][w]),
+                                        'H' : H[v][w],
                                         'sigma' : float(params['sigma']),
                                         'var' : re.sub(':[cC]','',W.format(i=str(k))),
                                         'tau' : float(T[i][k]),
-					'self' : re.sub(':[cC]','',W.format(i=str(i))),
+                                        'self' : re.sub(':[cC]','',W.format(i=str(i))),
                                         }
 
                             else:
@@ -873,7 +873,7 @@ def neteqns(G, H, T, eqns_solitary, params, coupling, var=False):
                                         'sigma' : 1.0,
                                         'var' : re.sub(':[cC]','',W.format(i=str(k))),
                                         'tau' : float(T[i][k]),
-					 'self' : re.sub(':[cC]','',W.format(i=str(i))),
+                                        'self' : re.sub(':[cC]','',W.format(i=str(i))),
                                         }
                             eqns_net[V.format(i=str(i))] += coupling.format(**fmt)
     return eqns_net

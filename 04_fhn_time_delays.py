@@ -47,9 +47,9 @@ G = np.loadtxt(gfilename)
 
 C = params['sigma'] 
 
-H = [ [C, 0],
+H = [ ["sigma", "0"],
 
-      [0, 0] ]
+      ["0", "0"] ]
 
 print 'H', H
 
