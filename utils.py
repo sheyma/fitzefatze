@@ -2,6 +2,11 @@ import numpy as np
 import networkx as nx
 import re
 import subprocess as sp
+import math
+
+params = { # Fitzhugh-Nagumo simulation parameters...
+        'dt': 0.001, 
+			}
 
 # loading binary matrix 
 def load_adjacency(file):
@@ -9,7 +14,6 @@ def load_adjacency(file):
 	AT = np.transpose(A)
 	return AT
 	
-
 # save adjacency matrix
 def export_random_adjacency(graph, file_name, method):		
 	#print graph
@@ -20,7 +24,6 @@ def export_random_adjacency(graph, file_name, method):
 			f.write("%d\t" % (hiwi[i,j]))
 		f.write("\n")
 	f.close()	
-
 
 def load_simfile(infile, unpack=False):
 	print "reading data ..."
@@ -43,3 +46,17 @@ def load_simfile(infile, unpack=False):
 def get_data_basename(infile):
 	basename = re.sub(r'\.dat(|\.xz|\.gz|\.bz2)$', '', infile, flags=re.IGNORECASE)
 	return basename
+
+# obtain u_i time series from loaded matrix
+def get_timeseries(simfile):
+	print "subtracting u-time series as numpy matrix..."
+	# extract first column of simout as time vector
+	tvec = simfile[:,0]
+	dt   = tvec[1] - tvec[0]
+	# calculate total time of simulation 
+	T    = int(math.ceil( (tvec[-1])  / dt * params['dt'] ))
+	print "T = " , T , "[seconds]", "dt = " , dt/100 ,"[seconds]"
+	# extract u-columns
+	u_indices  = np.arange(1, simfile.shape[1] ,1)
+	u_series   = simfile[:, u_indices]
+	return u_series , T, dt, tvec

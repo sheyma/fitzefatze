@@ -24,7 +24,8 @@ his_orig, bin_orig = np.histogram(flat_orig, bins=100, normed=True)
 his_rand, bin_rand = np.histogram(flat_rand, bins=100, normed=True)
 
 print stats.ks_2samp(his_orig, his_rand)
-print orig.mean(), rand.mean()
+print flat_orig.mean(), flat_rand.mean()
+print flat_orig.std(), flat_rand.std()
 
 # comparing distance distributions of two given graphs 
 dir_adj = '/home/sheyma/devel/fitzefatze/data/jobs_adj'
@@ -35,7 +36,7 @@ ks_pval  = []
 
 import csv
 
-csvfile = open('outputFileName.csv', 'wb')
+csvfile = open('data/kolmog_for_distance.csv', 'wb')
 writer = csv.writer(csvfile)
 
 for i in range(34, 83, 1):
@@ -57,7 +58,7 @@ for i in range(34, 83, 1):
     diff, p = stats.ks_2samp(his_orig, his_rand)
     #print orig.mean() - rand.mean()
     #print thr, diff, p
-    #writer.writerow([thr, diff, p])
+    writer.writerow([thr, format(diff, '.2f'), format(p, '.5f')])
     ks_stats.append(diff)
     ks_pval.append(p)
 

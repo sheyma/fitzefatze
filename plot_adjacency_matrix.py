@@ -44,14 +44,44 @@ def plot_adj(adjacency_matrix):
 
     return
 
-#file_in    = '/home/sheyma/devel/tmp/data/acp_w_thr_0.54.dat'
+file_in    = '/home/sheyma/devel/fitzefatze/data/jobs_adj/acp_w_thr_0.79.dat'
 #file_in    = '/home/sheyma/devel/tmp/data/acp_w_thr_0.54_erdos.dat'
 #file_in    = '/home/sheyma/devel/tmp/data/acp_w_thr_0.54_doubedge.dat'
 #file_in    = '/home/sheyma/devel/tmp/data/acp_w_thr_0.54_presdist.dat'
 #file_in    = '/home/sheyma/devel/tmp/data/acp_w_thr_0.54_partial.dat'
-file_in    = '/home/sheyma/devel/fitzefatze/data/jobs_adj/acp_w_thr_0.54_config.dat'
+#file_in    = '/home/sheyma/devel/fitzefatze/data/jobs_adj/acp_w_thr_0.54_config.dat'
 
 
 adj_matrix = load_matrix(file_in)
-plot_adj(adj_matrix)
+#print np.where(adj_matrix==1)
+#plot_adj(adj_matrix)
+#plt.show()
+
+# node with highest degree
+a = np.where(adj_matrix==1)[0]
+counts = np.bincount(a)
+#print np.argmax(counts)
+
+cc_node_all = {}
+def get_node_cc_and_degree(G):
+	f = open('data/acp_w_thr_0054_cc_and_degree_node.dat', 'a')
+	#f.write('node\tr(thre.)\tnode_cc\n')
+	for node in G:
+		cc_node = nx.clustering(G,node)
+		deg_node = G.degree(node)
+
+		f.write("%d\t%f\t%f\n" % (node+1, cc_node, deg_node))
+		#1. node, 2. threshold, 3. clustering coefficient of node 
+		#4. degree of node		
+		
+		cc_node_all[int(node)] = cc_node
+	f.close()
+	return cc_node_all
+	
+
+import networkx as nx
+G =nx.from_numpy_matrix(adj_matrix)
+cc_node_all = get_node_cc_and_degree(G)
+print np.argmax(cc_node_all.values()), np.max(cc_node_all.values())
+nx.draw(G)
 plt.show()

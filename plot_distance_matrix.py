@@ -50,29 +50,32 @@ def distance_masking(distance_matrix, mask_file):
     return d_masked
 
 
-file_in  = '/home/sheyma/devel/fitzefatze/data/fib_length.dat'
-d_matrix = load_matrix(file_in)
-
-file_orig = '/home/sheyma/devel/fitzefatze/data/jobs_adj/acp_w_thr_0.54.dat'
-file_rand = '/home/sheyma/devel/fitzefatze/data/jobs_erdos00/acp_w_thr_0.54_erdos.dat'
-
-d_orig = distance_masking(d_matrix, file_orig)
-d_rand = distance_masking(d_matrix, file_rand)
 
 
-#flat_orig = np.ndarray.flatten(d_orig)
-#plt.figure(1)
-#plt.hist(flat_orig)
+if __name__ == '__main__':
+	file_in  = 'data/fib_length.dat'
+	d_matrix = load_matrix(file_in)
 
-#flat_rand = np.ndarray.flatten(d_rand)
-#plt.figure(2)
-#plt.hist(flat_rand)
+	file_orig = 'data/jobs_adj/acp_w_thr_0.54.dat'
+	file_rand = 'data/jobs_erdos00/acp_w_thr_0.54_erdos.dat'
 
-#plt.show()
+	d_orig = distance_masking(d_matrix, file_orig)
+	d_rand = distance_masking(d_matrix, file_rand)
 
-#figure   = plot_corr(d_orig, 'mm')
-figure   = plot_corr(d_rand, 'mm')
-#figure.savefig('/home/sheyma/devel/fitzefatze/figures/distance_matrix.png')
-figure.savefig('/home/sheyma/devel/fitzefatze/figures/distance_matrix_random.png')
-#figure.savefig('/home/sheyma/devel/fitzefatze/figures/distance_matrix_orig.png')
-#plt.show()
+
+	#flat_orig = np.ndarray.flatten(d_orig)
+	#plt.figure(1)
+	#plt.hist(flat_orig)
+
+	#flat_rand = np.ndarray.flatten(d_rand)
+	#plt.figure(2)
+	#plt.hist(flat_rand)
+
+	#plt.show()
+
+	#figure   = plot_corr(d_orig, 'mm')
+	figure   = plot_corr(d_rand, 'mm')
+	#figure.savefig('/home/sheyma/devel/fitzefatze/figures/distance_matrix.png')
+	#figure.savefig('figures/distance_matrix_random.png')
+	#figure.savefig('/home/sheyma/devel/fitzefatze/figures/distance_matrix_orig.png')
+	plt.show()

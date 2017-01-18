@@ -48,15 +48,35 @@ def spearma_corr(matrix , out_basename):
 	return cr_matrix
 
 
-data_dir = '/home/sheyma/devel/fitzefatze/data/jobs_adj/'
-file_in  =  data_dir + 'acp_w_thr_0.98_sigma=0.05_D=0.05_v=30.0_tmax=45000.dat'
+#data_dir = '/home/sheyma/devel/fitzefatze/data/jobs_adj/'
+#file_in  =  data_dir + 'acp_w_thr_0.98_sigma=0.05_D=0.05_v=30.0_tmax=45000.dat'
 
-data_matrix   = load_simfile(file_in)
-out_basename  = get_data_basename(file_in)
+#data_matrix   = load_simfile(file_in)
+#out_basename  = get_data_basename(file_in)
 
-[u_matrix , T, dt, tvec] =	fhn_timeseries(data_matrix)
-pearson_matrix           =   pearson_corr(u_matrix, out_basename)
-spearma_matrix           =   spearma_corr(u_matrix, out_basename)
+#[u_matrix , T, dt, tvec] =	fhn_timeseries(data_matrix)
+#pearson_matrix           =   pearson_corr(u_matrix, out_basename)
+#spearma_matrix           =   spearma_corr(u_matrix, out_basename)
 
-print pearson_matrix.shape  
-print spearma_matrix.shape
+#print pearson_matrix.shape  
+#print spearma_matrix.shape
+
+
+
+thr_array = np.arange(34, 86, 4)
+sig_array = np.array([0.050, 0.045, 0.040, 0.035, 0.030, 0.025, 0.020,  0.015, 0.010, 0.005 ])
+
+DIR_FHN = '/run/media/sheyma/0a5437d3-d51c-4c40-8c7a-06738fd0c83a/sheyma_bayrak_2015/jobs/'
+name_fhn  = 'acp_w_0_ADJ_thr_0.54_sigma=0.3_D=0.05_v=30.0_tmax=45000.dat.xz'
+
+for THR in thr_array :
+    for SIG in sig_array :
+        input_A = name_fhn[0:18] + str(THR) + name_fhn[20:27] + str(SIG) + name_fhn[30:]
+        out_basename  = 'data/spearman/' + input_A[:-7]
+        input_A = DIR_FHN + input_A
+        data_matrix   = load_simfile(input_A)
+        
+        # calculate correlation with two different methods
+        spearma_matrix = spearma_corr(data_matrix, out_basename)
+        pearson_matrix = pearson_corr(data_matrix, out_basename)
+        
