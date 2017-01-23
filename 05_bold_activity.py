@@ -132,33 +132,38 @@ def filter_bold(bold_input, out_basename):
 	np.savetxt(file_name, Bold_filt,'%.6f',delimiter='\t')
 	return Bold_filt
 
+
 # here we go
-params = Params()
-params.taus = 0.65
-params.tauf = 0.41
-params.tauo = 0.98
-params.alpha  = 0.32
-params.dt = 0.001
-params.Eo = 0.34
-params.vo = 0.02;
-params.k1 = 7.0 * params.Eo
-params.k2 = 2.0
-params.k3 = 2.0 * params.Eo - 0.2
 
-iparams = invert_params(params)
-# initial conditions for the bold differential equations
-x_init = np.array([0 , 1, 1, 1])		
+if __name__ == '__main__':
 
-data_dir        = '/home/sheyma/devel/fitzefatze/data/jobs_adj/'
-input_name      = data_dir + 'acp_w_thr_0.98_sigma=0.05_D=0.05_v=30.0_tmax=45000.dat'
-out_basename    = get_data_basename(input_name)
+    if len(sys.argv) < 2:
+        print "%s: no input files given" % sys.argv[0]
+        print "usage: %s FILE_NAMES..." % sys.argv[0]
 
-[timeseries, T] = fhn_timeseries(input_name)
+    params = Params()
+    params.taus = 0.65
+    params.tauf = 0.41
+    params.tauo = 0.98
+    params.alpha  = 0.32
+    params.dt = 0.001
+    params.Eo = 0.34
+    params.vo = 0.02;
+    params.k1 = 7.0 * params.Eo
+    params.k2 = 2.0
+    params.k3 = 2.0 * params.Eo - 0.2
 
-print timeseries.shape
+    iparams = invert_params(params)
+    # initial conditions for the bold differential equations
+    x_init = np.array([0 , 1, 1, 1])
 
-N_timeseries  = normalize_timeseries(timeseries)
+    for file_in in sys.argv[1:]:
+        out_basename    = get_data_basename(file_in)
+        [timeseries, T] = fhn_timeseries(file_in)
+        print timeseries.shape
 
-N_bold_signal = calc_bold(N_timeseries, T, out_basename)
+        N_timeseries  = normalize_timeseries(timeseries)
 
-N_bold_filt   = filter_bold(N_bold_signal, out_basename)
+        N_bold_signal = calc_bold(N_timeseries, T, out_basename)
+
+        N_bold_filt   = filter_bold(N_bold_signal, out_basename)
