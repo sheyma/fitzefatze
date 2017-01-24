@@ -1,5 +1,18 @@
 #!/bin/bash
 
+#MEM="120gb"
+#INOUTDIR="/ptmp/sbayrak/fitzefatze/jobs_erdos41"
+
+if test $# != 2; then
+        echo "error: bad usage" >&2
+        echo "try something like: cat  jobs-56gb.txt | $0 56 /ptmp/sbayrak/fitzefatze/jobs_erdos42" >&2
+        exit 1
+fi
+
+MEM="${1}gb"
+INOUTDIR="$2"
+
+
 NL=$'\n'
 NL='\n'
 
@@ -10,13 +23,19 @@ while read -r yo cnt sum jobs ;do
 	echo "job $jfile: $sum"
 	i=1
 	jobdef="CNT='$cnt'$NL"
+	jobdef="${jobdef}MEM_ESTM='$sum'$NL"
 	while test "$jobs" != ""; do
 		read -r t s mem jobs <<<$jobs
 		jobdef="${jobdef}ARGS[$i]='$t $s'$NL"
 		((i++))
 	done
 	#echo "$jobdef"
-	sed "s/%jobdef%/$jobdef/g" z.cmd > "z/$jfile"
+	sed \
+		-e "s/%jobdef%/$jobdef/g" \
+		-e "s/%ConsumableCpus%/$cnt/g" \
+		-e "s/%ConsumableMemory%/$MEM/g" \
+		-e "s@%INOUTDIR%@${INOUTDIR}@g" \
+		z.cmd > "z/$jfile"
 done
 
 exit

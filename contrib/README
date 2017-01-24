@@ -1,0 +1,20 @@
+
+Here some arbirtary ordered notes, mostly regarding hydra job scheduling ....
+
+
+## some command line snipptets
+
+# fhn corr
+find   /ptmp/sbayrak/fitzefatze/jobs_erdos4* -type f -name "acp_w_thr_0.[3-8]*_*_sigma=*tmax=45000.dat" -mmin +2  | sed "s/.dat$//" | while read -r base ; do if ! test -f ${base}_pearson.dat || ! test -f ${base}_spearm.dat; then  echo "$base.dat" ;fi ;done                   | \time -v xargs -r -P 20 -n 5 python -u 06_fhn_correlation.py
+
+# bold
+find   /ptmp/sbayrak/fitzefatze/jobs_erdos00 -type f -name "acp_w_thr_0.[3-8]*_*_sigma=*tmax=45000.dat" -mmin +2  | sed "s/.dat$//" | while read -r base ; do if ! test -f ${base}_NORM_BOLD_signal.dat || ! test -f ${base}_BOLD_filtered.dat; then  echo "$base.dat" ;fi ;done   | \time -v xargs -r -P 20 -n 5 python -u 05_bold_activity.py
+
+# bold corr
+find   /ptmp/sbayrak/fitzefatze/jobs_erdos00 -type f \( -name  "*NORM_BOLD_signal.dat" -o -name "*BOLD_filtered.dat" \)  -mmin +2  | sed "s/.dat$//" | while read -r base ; do if ! test -f ${base}_corr.dat; then  echo "$base.dat" ;fi ;done  | \time -v xargs -r -P 20 -n 5 python -u 07_bold_correlation.py
+
+
+# get fhn memory stats
+grep "Maximum resident" jobs_erdos2[1-9]/*thr_*_*_sigma=*.jobout | sed 's/.*thr_\([^_]*\)_.*_sigma=\([^_]*\)_.*: \([0-9]*\)/\1 \2 \3/' | sort -n > ~/devel/fitzefatze/contrib/mem-stats-2x
+awk '{maxmem[$1" "$2]=$3} END{for (i in maxmem ) print i, maxmem[i] | "sort"}' ~/devel/fitzefatze/contrib/mem-stats-2x > ~/devel/fitzefatze/contrib/mem-stats-2x-max
+

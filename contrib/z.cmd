@@ -8,8 +8,8 @@
 # @ node_usage = not_shared
 # @ node = 1
 # @ tasks_per_node = 1
-# @ resources = ConsumableCpus(10)
-# @ node_resources = ConsumableMemory(120gb)
+# @ resources = ConsumableCpus(%ConsumableCpus%)
+# @ node_resources = ConsumableMemory(%ConsumableMemory%)
 # @ network.MPI = sn_all,not_shared,us
 # @ wall_clock_limit = 02:00:00
 # @ notification = error
@@ -55,9 +55,7 @@ echo "#### end original job setup ####"
 ## finally we do do our real stuff ...
 echo "####  here we go"
 
-INOUTDIR="/ptmp/sbayrak/fitzefatze/jobs_erdos39"
-
-JOB_BASE_NAME="$INOUTDIR/acp_w_thr_%threshold%_erdos_sigma=%sigma%_D=0.05_v=%velocity%_tmax=%tmax%"
+INOUTDIR="%INOUTDIR%"
 
 if test -n "$LOADL_STEP_OUT"; then
 	ORIG_LOG="$INOUTDIR/lljob-$(basename "$LOADL_STEP_OUT")"
@@ -71,8 +69,9 @@ fi
 # add backgound jobs in parallel ...
 
 
-# The jobdef macro below will be expanded like
+# The jobdef macro below will be expanded to something like
 #CNT='2'
+#MEM_ESTM='48637904'
 #ARGS[1]='0.34 0.010'
 #ARGS[2]='0.82 0.020'
 
@@ -80,7 +79,7 @@ fi
 
 #DRYRYUN="1"
 
-echo "## start $CNT backround jobs"
+echo "## start $CNT backround jobs, estimatated memory usage is $MEM_ESTM"
 for i in $(seq 1 $CNT); do
 	read thr sigma <<<${ARGS[$i]}
 	tmax=45000

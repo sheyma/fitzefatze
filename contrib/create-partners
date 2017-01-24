@@ -1,7 +1,17 @@
 #!/bin/bash
 
-# space separated csv file: thr, sigma
+if test $# != 3; then
+	echo "error: bad usage" >&2
+	echo "try something like: $0 todo.txt 56 2 > jobs-56gb.txt" >&2
+	exit 1
+fi
+
+# todo is space separated csv file: thr, sigma
 todo=$1
+maxmem=$2
+extramem=$3
+
+! test -f "$todo" && echo "error: file does not exist '$todo'" >&2 && exit 1
 
 # space separated csv file (unique key): thr, sigma, maxmem
 statsfile="$HOME/devel/fitzefatze/contrib/mem-stats-2x-max"
@@ -31,8 +41,8 @@ function get_partner(availmem,      i)
 }
 
 BEGIN {
-	maxmem = 120 * 1024*1024
-	extra = 2 * 1024*1024
+	maxmem = '$maxmem' * 1024*1024
+	extra = '$extramem' * 1024*1024
 
 	while (getline < "'$todo'")
 		todo[$1" "$2]=1
