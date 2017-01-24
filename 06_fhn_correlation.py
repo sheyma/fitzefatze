@@ -57,14 +57,25 @@ data_matrix   = load_simfile(file_in)
 out_basename  = get_data_basename(file_in)
 
 [u_matrix , T, dt, tvec] =	fhn_timeseries(data_matrix)
-pearson_matrix           =   pearson_corr(u_matrix, out_basename)
-spearma_matrix           =   spearma_corr(u_matrix, out_basename)
+#pearson_matrix           =   pearson_corr(u_matrix, out_basename)
+#spearma_matrix           =   spearma_corr(u_matrix, out_basename)
 
-print pearson_matrix.shape  
-print spearma_matrix.shape
+#print pearson_matrix.shape  
+#print spearma_matrix.shape
 
+from sklearn.covariance import GraphLassoCV
+estimator = GraphLassoCV()
 
+A = estimator.fit(u_matrix)
 
+from matplotlib import pyplot as plt
+
+# Display the covariance
+plt.figure(figsize=(10, 10))
+
+# The covariance can be found at estimator.covariance_
+plt.imshow(estimator.covariance_, interpolation="nearest",
+           vmax=1, vmin=-1, cmap=plt.cm.RdBu_r)
 #thr_array = np.arange(34, 86, 4)
 #sig_array = np.array([0.050, 0.045, 0.040, 0.035, 0.030, 0.025, 0.020,  0.015, 0.010, 0.005 ])
 
