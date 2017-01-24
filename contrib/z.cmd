@@ -2,8 +2,8 @@
 #
 # Sample script for LoadLeveler
 #
-# @ error = /ptmp/$(user)/LOG-ALL/$(jobid).out
-# @ output = /ptmp/$(user)/LOG-ALL/$(jobid).out
+# @ error = /ptmp/$(user)/LOG-ALL/$(jobid).log
+# @ output = /ptmp/$(user)/LOG-ALL/$(jobid).log
 # @ job_type = serial
 # @ node_usage = not_shared
 # @ node = 1
@@ -60,8 +60,9 @@ INOUTDIR="/ptmp/sbayrak/fitzefatze/jobs_erdos39"
 JOB_BASE_NAME="$INOUTDIR/acp_w_thr_%threshold%_erdos_sigma=%sigma%_D=0.05_v=%velocity%_tmax=%tmax%"
 
 if test -n "$LOADL_STEP_OUT"; then
-	#ln -f "$LOADL_STEP_OUT" "${JOB_BASE_NAME}.jobout"
-	ORIG_LOG="$LOADL_STEP_OUT"
+	ORIG_LOG="$INOUTDIR/lljob-$(basename "$LOADL_STEP_OUT")"
+	echo "link logfile to $ORIG_LOG"
+	ln -f "$LOADL_STEP_OUT" "$ORIG_LOG"
 else
 	echo "warning: unknown load leveler log file (dryrun?)"
 	ORIG_LOG="unknown"
