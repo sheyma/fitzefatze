@@ -63,34 +63,57 @@ if test -n "$LOADL_STEP_OUT"; then
 	#ln -f "$LOADL_STEP_OUT" "${JOB_BASE_NAME}.jobout"
 	ORIG_LOG="$LOADL_STEP_OUT"
 else
-	echo "warning: don't link log file (dryrun?)"
+	echo "warning: unknown load leveler log file (dryrun?)"
 	ORIG_LOG="unknown"
 fi
 
 # add backgound jobs in parallel ...
 
 
-# expanded like
+# The jobdef macro below will be expanded like
 #CNT='2'
-#ARGS[0]='0.34 0.030'
-#ARGS[1]='0.82 0.005'
+#ARGS[1]='0.34 0.010'
+#ARGS[2]='0.82 0.020'
 
 %jobdef%
 
+#DRYRYUN="1"
+
+echo "## start $CNT backround jobs"
 for i in $(seq 1 $CNT); do
 	read thr sigma <<<${ARGS[$i]}
 	tmax=45000
 	velocity=30.0
 	JOB_BASE_NAME="$INOUTDIR/acp_w_thr_${thr}_erdos_sigma=${sigma}_D=0.05_v=${velocity}_tmax=${tmax}"
 	BLOG="${JOB_BASE_NAME}.jobout"
-	echo "starting backround job $i with args ${ARGS[$i]}"
-	echo "### background job (${ARGS[$i]}), original logfile is $(basename "$ORIG_LOG")" to "$BLOG"
-	#/usr/bin/time -v  python -u 04_fhn_time_delays.py "$INOUTDIR/acp_w_thr_${thr}_erdos.dat" data/fib_length.dat ${ARGS[$i]} $tmax \
-	#    >> "$BLOG" 2>&1 &
 
-	echo /usr/bin/time -v  python -u 04_fhn_time_delays.py "$INOUTDIR/acp_w_thr_${thr}_erdos.dat" data/fib_length.dat ${ARGS[$i]} $tmax und...
+	test -z "$DRYRYUN" || BLOG="test-$i.log"
+
+	bj="bj $i:" # just a log prefix ...
+
+	echo "$bj starting backround job $i with args ${ARGS[$i]}"
+	test -f "$BLOG" && echo "$bj warning: logfile already exists (repeated job?): '$BLOG'"
+
+	rm -f "$BLOG"
+	echo "### background job $i with args ${ARGS[$i]}(${ARGS[$i]}), , original LL logfile is $ORIG_LOG" > "$BLOG"
+	cmd="/usr/bin/time -v  python -u 04_fhn_time_delays.py "$INOUTDIR/acp_w_thr_${thr}_erdos.dat" data/fib_length.dat ${ARGS[$i]} $tmax"
+
+	echo "$bj run command: $cmd >> "$BLOG" 2>&1 &"
+	echo "run command: $cmd >> "$BLOG" 2>&1 &" >> "$BLOG"
+
+	if test -z "$DRYRYUN"; then
+		$cmd >> "$BLOG" 2>&1 &
+	else
+		/usr/bin/time -v  sh -c "echo 'test output'; sleep '$i'" >> "$BLOG" 2>&1 &
+	fi
 done
 
+echo "# review shell jobs"
+jobs
+date "+waiting for jobs...: %F %T"
 wait
+
+# TODO print exit status of all the processes
+
 
 date "+end time: %F %T"
