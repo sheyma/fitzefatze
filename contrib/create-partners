@@ -1,0 +1,71 @@
+#!/bin/bash
+
+# space separated csv file: thr, sigma
+todo=$1
+
+# space separated csv file (unique key): thr, sigma, maxmem
+statsfile="$HOME/devel/fitzefatze/contrib/mem-stats-2x-max"
+
+awk '
+
+function get_partner(availmem,      i)
+{
+	#print "get partner", j, left, "XXX", memstat[j]
+	found = 0
+	for (i in todo) {
+		if ( todo[i] && memstat[i] < availmem) {
+			if (!found || memstat[i] > memstat[found]) {
+				good = memstat[i]
+				found = i
+			}
+		}
+	}
+	if (found) {
+		todo[found] = 0
+		#print "found", found
+		return found
+	} else {
+		#print "no partner found"
+		return 0
+	}
+}
+
+BEGIN {
+	maxmem = 120 * 1024*1024
+	extra = 2 * 1024*1024
+
+	while (getline < "'$todo'")
+		todo[$1" "$2]=1
+        while (getline < "'$statsfile'") {
+                memstat[$1" "$2]=$3
+	}
+
+	for (t in todo) {
+
+		#if (!todo[t]) continue
+		#todo[t] = 0
+
+		left = maxmem - extra
+		j = 0
+		while (partner = get_partner(left)) {
+			#print "got one", partner
+			jobs[j] = partner
+			j++
+			left -= memstat[partner]
+		}
+		if (cnt = j) {
+			line = ""
+			sum = 0
+			for (j=0; j<cnt; j++) {
+				sum +=  memstat[jobs[j]]
+				line = line jobs[j]" "memstat[jobs[j]] " "
+			}
+			print "yo", cnt, sum, line
+		}
+
+	}
+
+
+}
+' < /dev/null
+
