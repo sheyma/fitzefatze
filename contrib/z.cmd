@@ -97,7 +97,7 @@ for i in $(seq 1 $CNT); do
 
 	rm -f "$BLOG"
 	echo "### background job $i with args ${ARGS[$i]}(${ARGS[$i]}), , original LL logfile is $ORIG_LOG" > "$BLOG"
-	cmd="/usr/bin/time -v  python -u 04_fhn_time_delays.py "$INOUTDIR/acp_w_thr_${thr}_erdos.dat" data/fib_length.dat ${ARGS[$i]} $tmax"
+	cmd="/usr/bin/time -v  python -u 04_fhn_time_delays.py "$INOUTDIR/acp_w_thr_${thr}_erdos.dat" data/fib_length.dat $sigma $velocity $tmax"
 
 	echo "$bj run command: $cmd >> "$BLOG" 2>&1 &"
 	echo "run command: $cmd >> "$BLOG" 2>&1 &" >> "$BLOG"
