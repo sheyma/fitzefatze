@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# ALL original input data
+# ALL log files
+# fhn corr
+# bold corr:  *NORM_BOLD_signal.dat and *BOLD_filtered.dat
+
+rsync -avz --relative  \
+	--include="/jobs*/acp_w_thr_?.??{,_erdos}.dat" \
+	--include="jobs*/lljob-*.log" \
+	--include="/jobs*/*tmax=45000_{pearson.dat,spearm.dat}" \
+	--include="/jobs*/*tmax=45000*_BOLD_*_corr.dat" \
+	--exclude="jobs*/*" \
+	/ptmp/sbayrak/fitzefatze/./jobs*   rudi@akne.unxz.net:fitzefatze-hydra/
