@@ -1,10 +1,5 @@
 import numpy as np
-import sys, math 
-import matplotlib as mpl
-mpl.use('TkAgg')
-import matplotlib.pyplot as pl
-import subprocess as sp
-import scipy.stats as sistat
+import sys
 from utils import load_simfile, get_data_basename
 
 def corr_matrix(matrix, out_basename):
