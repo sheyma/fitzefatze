@@ -5,40 +5,23 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-
-
-direc = '/home/sheyma/HD/sheyma_bayrak_2015/jobs_adj'
-#file_orig = os.path.join(direc, 'acp_w_R0_single_network_measures.dat')
-#file_rand = os.path.join(direc, 'acp_w_Ra_single_network_measures.dat')
-
-#file_orig = '/home/sheyma/devel/tmp/data/jobs_network/acp_w_single_network_measures.dat'
-#file_rand = '/home/sheyma/devel/tmp/data/jobs_network/acp_w_erdos_single_network_measures.dat'
-
-#G_orig = np.loadtxt(file_orig, unpack=True).T
-#G_rand = np.loadtxt(file_rand, unpack=True).T
-
-#file_orig_sw = os.path.join(direc, 'acp_w_R0_small_worldness.dat')
-
+direc        = '/home/sheyma/HD/sheyma_bayrak_2015/jobs_adj'
 file_orig_sw = '/home/sheyma/devel/fitzefatze/data/jobs_adj/small_worldness.dat'
 sw           = np.loadtxt(file_orig_sw, unpack=True).T
 
-
-file_orig = '/home/sheyma/devel/fitzefatze/data/jobs_adj/single_network_measures.dat'
-G_orig    = np.loadtxt(file_orig, unpack=True).T
-
-# number of num_realization at each threshold
+file_orig    = '/home/sheyma/devel/fitzefatze/data/jobs_adj/single_network_measures.dat'
+G_orig       = np.loadtxt(file_orig, unpack=True).T
 
 density_rand = []
 cluster_rand = []
 
+# number of num_realization at each threshold
 num_realization = 100
 for i in range(0, num_realization):
     
     file_rand = 'data/jobs_erdos' + format(i, '02d') + '/single_network_measures.dat'
     data_rand = np.loadtxt(file_rand, unpack=True).T
-    #print file_rand
     # sum network densities (each at 3rd column)
-    
     density_rand.append(data_rand[:,2])
     cluster_rand.append(data_rand[:,3])
 
@@ -50,11 +33,8 @@ cluster_rand = np.array(cluster_rand)
 cluster_rand_mean = cluster_rand.mean(axis=0)
 cluster_rand_std  = cluster_rand.std(axis=0)
 
-print cluster_rand_std
-
-thr_steps = 101
-
 # just a safety check
+thr_steps = 101
 sw_values = []
 if num_realization * thr_steps != sw.shape[0]:
     print "error:", num_realization * thr_steps, "!=", sw.shape[0]
@@ -66,23 +46,10 @@ for i in range(0, num_realization):
     
     #print sw[a:b,0]
     sw_values.append(sw[a:b,7])
-    #if i == 0:
-    #    sw_sum = sw[a:b,7]
-    #else:
-    #    sw_sum += sw[a:b,7]
-    
-    
-    #print sw[0:101,0]
-    #print sw[101:202, 0]
-    #print sw[202:303, 0]
 
-#sw_ave = sw_sum / num_realization
-sw_values = np.array(sw_values)
+sw_values      = np.array(sw_values)
 sw_values_mean = sw_values.mean(axis=0)
 sw_values_std  = sw_values.std(axis=0)
-
-#density_rand = density_rand / float(num_realization)
-#cluster_rand = cluster_rand / float(num_realization)
 
 ############### plotting #############################################
 
@@ -118,7 +85,7 @@ thr_dx = second_threshold
 thr_dy = G_orig[:,2][np.where(G_orig[:,0]==thr_dx)]
 
 points = [(thr_ax, thr_ay), (thr_bx, thr_by),
-          (thr_cx, thr_cy), (thr_dx, thr_dy)] # (a1,b1), (a2,b2), ...
+          (thr_cx, thr_cy), (thr_dx, thr_dy)] 
 
 for pt in points:
     # plot (x,y) pairs.
@@ -128,7 +95,6 @@ for pt in points:
     print pt[0],pt[0],0,pt[1]
 
 plt.legend(frameon=False, fontsize = 30, numpoints=1)
-
 
 # clustering coefficient #############################################
 plt.subplot(132)
@@ -145,7 +111,6 @@ plt.yticks([0, 0.2, 0.4, 0.6, 0.8, 1.0],
 
 plt.xlabel('p', fontsize = 30)
 plt.ylabel('C', fontsize = 30)
-
 
 # plot lines
 thr_ax = first_threshold
@@ -199,7 +164,7 @@ for pt in points:
     plt.plot( [0,pt[0]], [pt[1],pt[1]], 'g', linewidth=2.5)
     print pt[0],pt[0],0,pt[1]
 
-plt.legend(frameon=False,  loc='best', fontsize = 28,  numpoints=1 )
+plt.legend(frameon=False,  loc='lower center', fontsize = 30,  numpoints=1 )
 
 plt.show()
 
