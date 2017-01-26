@@ -60,8 +60,8 @@ fi
 ## finally we do do our real stuff ...
 echo "####  here we go"
 
-find   /ptmp/sbayrak/fitzefatze/jobs_erdos00 -type f \( -name  "*NORM_BOLD_signal.dat" -o -name "*BOLD_filtered.dat" \)  -mmin +2 \
+find   /ptmp/sbayrak/fitzefatze/jobs_erdos* -type f \( -name  "*NORM_BOLD_signal.dat" -o -name "*BOLD_filtered.dat" \)  -mmin +2 \
 	| sed "s/.dat$//" | while read -r base ; do if ! test -f ${base}_corr.dat; then  echo "$base.dat" ;fi ;done \
-	| \time -v xargs -r -P 16 -n 30 python -u 07_bold_correlation.py
+	| \time -v xargs -t -r -P 16 -n 2 python -u 07_bold_correlation.py
 
 date "+end time: %F %T"

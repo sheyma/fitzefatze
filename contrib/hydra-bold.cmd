@@ -60,8 +60,8 @@ fi
 ## finally we do do our real stuff ...
 echo "####  here we go"
 
-find   /ptmp/sbayrak/fitzefatze/jobs_erdos1[0-4] -type f -name "acp_w_thr_0.[3-8]*_*_sigma=*tmax=45000.dat" -mmin +2  \
+find   /ptmp/sbayrak/fitzefatze/jobs_erdos* -type f -name "acp_w_thr_0.[3-8]*_*_sigma=*tmax=45000.dat" -mmin +2  \
 	| sed "s/.dat$//" | while read -r base ; do if ! test -f ${base}_NORM_BOLD_signal.dat || ! test -f ${base}_BOLD_filtered.dat; then  echo "$base.dat" ;fi ;done \
-	| \time -v xargs -r -P 16 -n 16 python -u 05_bold_activity.py
+	| \time -v xargs -t -r -P 16 -n 1 python -u 05_bold_activity.py
 
 date "+end time: %F %T"

@@ -2,8 +2,8 @@
 #
 # Sample script for LoadLeveler
 #
-# @ error = /ptmp/$(user)/LOG-ALL/$(jobid).out
-# @ output = /ptmp/$(user)/LOG-ALL/$(jobid).out
+# @ error = /ptmp/$(user)/LOG-ALL/$(jobid).log
+# @ output = /ptmp/$(user)/LOG-ALL/$(jobid).log
 # @ job_type = serial
 # @ node_usage = not_shared
 # @ node = 1
@@ -17,8 +17,12 @@
 # @ queue
 
 date "+start time: %F %T"
-export TMPDIR="/ptmp/sbayrak/TMP"
 
+cd ~/devel/fitzefatze || exit
+export TMPDIR="/ptmp/sbayrak/TMP"
+mkdir -p "$TMPDIR"
+
+if test -z "$SKIP_LL_INFO"; then
 ## print host info for debugging or reproducing later
 echo "#### begin machine info ####"
 echo -n "## whoami: "
@@ -51,6 +55,7 @@ echo "#### end env ####"
 echo "#### begin original job setup ####"
 grep "^# @ " "$0"
 echo "#### end original job setup ####"
+fi
 
 ## finally we do do our real stuff ...
 echo "####  here we go"

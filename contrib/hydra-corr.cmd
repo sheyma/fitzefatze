@@ -63,8 +63,8 @@ fi
 ## finally we do do our real stuff ...
 echo "####  here we go"
 
-find   /ptmp/sbayrak/fitzefatze/jobs_erdos4* -type f -name "acp_w_thr_0.[3-8]*_*_sigma=*tmax=45000.dat" -mmin +2  \
+find   /ptmp/sbayrak/fitzefatze/jobs* -type f -name "acp_w_thr_0.[2-8]*_*_sigma=*tmax=45000.dat" -mmin +2  \
 	| sed "s/.dat$//" | while read -r base ; do if ! test -f ${base}_pearson.dat || ! test -f ${base}_spearm.dat; then  echo "$base.dat" ;fi ;done \
-	| \time -v xargs -r -P 16 -n 2 python -u 06_fhn_correlation.py
+	| \time -v xargs -t -r -P 16 -n 2 python -u 06_fhn_correlation.py
 
 date "+end time: %F %T"

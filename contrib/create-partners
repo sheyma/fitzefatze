@@ -1,20 +1,20 @@
 #!/bin/bash
 
-if test $# != 3; then
+if test $# != 4; then
 	echo "error: bad usage" >&2
-	echo "try something like: $0 todo.txt 56 2 > jobs-56gb.txt" >&2
+	echo "try something like: $0 todo-all.txt  mem-stats.txt 56 2 > jobs-56gb.txt" >&2
 	exit 1
 fi
 
 # todo is space separated csv file: thr, sigma
 todo=$1
-maxmem=$2
-extramem=$3
-
-! test -f "$todo" && echo "error: file does not exist '$todo'" >&2 && exit 1
-
 # space separated csv file (unique key): thr, sigma, maxmem
-statsfile="$HOME/devel/fitzefatze/contrib/mem-stats-2x-max"
+statsfile=$2
+maxmem=$3
+extramem=$4
+
+! test -f "$todo" && echo "error: todo file does not exist '$todo'" >&2 && exit 1
+! test -f "$statsfile" && echo "error: stats file does not exist '$statsfile'" >&2 && exit 1
 
 awk '
 
@@ -25,7 +25,6 @@ function get_partner(availmem,      i)
 	for (i in todo) {
 		if ( todo[i] && memstat[i] < availmem) {
 			if (!found || memstat[i] > memstat[found]) {
-				good = memstat[i]
 				found = i
 			}
 		}
@@ -44,8 +43,9 @@ BEGIN {
 	maxmem = '$maxmem' * 1024*1024
 	extra = '$extramem' * 1024*1024
 
-	while (getline < "'$todo'")
+	while (getline < "'$todo'") {
 		todo[$1" "$2]=1
+	}
         while (getline < "'$statsfile'") {
                 memstat[$1" "$2]=$3
 	}
